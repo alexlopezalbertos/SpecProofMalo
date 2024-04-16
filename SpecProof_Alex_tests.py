@@ -60,8 +60,8 @@ def run_ERAT(filename_dsbp, filename_dsm):
     ## EXPORT TO EXCEL
     # df_full_bom.to_excel("specproof_output.xlsx", sheet_name="Full BOM")
     ## Display the df_full_bom DataFrame on Streamlit
-    st.write("DSBP BOM Data:")
-    st.dataframe(df_full_bom)
+    # st.write("DSBP BOM Data:")
+    # st.dataframe(df_full_bom)
 
 
 
@@ -165,8 +165,8 @@ def run_ERAT(filename_dsbp, filename_dsm):
     ## EXPORT TO EXCEL
     # df_dsm_bom.to_excel("specproof_dsm_output.xlsx", sheet_name="DSM BOM")
     ## Display the df_full_bom DataFrame on Streamlit
-    st.write("DSM BOM data:")
-    st.dataframe(df_dsm_bom)
+    # st.write("DSM BOM data:")
+    # st.dataframe(df_dsm_bom)
 
 
     ################## COMBINE & COMPARE ####################
