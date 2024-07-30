@@ -4,13 +4,15 @@ import numpy as np
 import streamlit as st
 from streamlit_option_menu import option_menu
 
-def ERAT():
-    st.title("ERAT")
+def SPECPROOF():
+    st.title("SpecProof")
     # UPLOAD BOTH EXCEL FILES #
-    filename_dsbp = st.file_uploader("Upload DSBP report")
-    filename_dsm = st.file_uploader("Upload ENOVIA DSM report")
+    st.subheader("Upload DSBP report", divider=True)
+    filename_dsbp = st.file_uploader("DSBP")
+    st.subheader("Upload ENOVIA report", divider=True)
+    filename_dsm = st.file_uploader("DSM")
 
-    if st.button("Run ERAT", type="primary"):
+    if st.button("Run", type="primary"):
         if filename_dsbp is None or filename_dsm is None:
             # Identify which inputs are missing
             missing_inputs = []
@@ -21,9 +23,9 @@ def ERAT():
             # Display a warning message
             st.warning(f"Please upload: {', '.join(missing_inputs)}.", icon="⚠️")
         else:
-            run_ERAT(filename_dsbp, filename_dsm)
+            run_SPECPROOF(filename_dsbp, filename_dsm)
 
-def run_ERAT(filename_dsbp, filename_dsm):
+def run_SPECPROOF(filename_dsbp, filename_dsm):
     # READ DSBP BOM #
     df_dsbp_bom = pd.read_excel(filename_dsbp, sheet_name="Full BOM - Materials")
     df_dsbp_bom_keep = ["PI FPC Code (IL/PM)", "PI FPC Description (IL/PM)", "PI Material Number (IL/PM)", "Material Description (IL/PM)", "Material Type (TRL)"]
@@ -74,7 +76,7 @@ def run_ERAT(filename_dsbp, filename_dsm):
     print(df_merged_bom.head())
     # df_compare.to_excel("specproof_compare_output.xlsx", sheet_name="Comparison")
     # Display the df_compare DataFrame on Streamlit
-    st.write("ERAT Comparison:")
+    st.write("SpecProof Comparison:")
     st.dataframe(df_compare_styled)
 
 
@@ -84,15 +86,15 @@ def main():
     with st.sidebar:
         selected = option_menu(
             menu_title="Navigation",
-            options=["ERAT"],
+            options=["SpecProof"],
             icons=["1-circle-fill"],
             menu_icon="list",
             default_index=0,
         )
 
     # Render the selected page
-    if selected == "ERAT":
-        ERAT()
+    if selected == "SpecProof":
+        SPECPROOF()
 
 if __name__ == "__main__":
     main()
