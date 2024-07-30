@@ -6,13 +6,16 @@ from streamlit_option_menu import option_menu
 
 def SPECPROOF():
     st.title("SpecProof")
+    st.write("")
     # UPLOAD BOTH EXCEL FILES #
-    st.subheader("Upload DSBP report", divider=True)
+    st.subheader("Upload DSBP report", divider="blue")
     filename_dsbp = st.file_uploader("DSBP")
-    st.subheader("Upload ENOVIA report", divider=True)
+    st.write("")
+    st.subheader("Upload ENOVIA report", divider="blue")
     filename_dsm = st.file_uploader("DSM")
+    st.write("")
 
-    if st.button("Run", type="primary"):
+    if st.button("RUN", type="primary"):
         if filename_dsbp is None or filename_dsm is None:
             # Identify which inputs are missing
             missing_inputs = []
