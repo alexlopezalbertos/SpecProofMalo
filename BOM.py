@@ -31,7 +31,7 @@ def run_ERAT(filename_dsbp, filename_dsm):
     df_dsbp_bom = df_dsbp_bom.rename(columns={"PI FPC Code (IL/PM)": "FPP Name", "PI FPC Description (IL/PM)": "FPP Title_DSBP", "PI Material Number (IL/PM)": "Material Number",
                                                "Material Description (IL/PM)": "Material Title_DSBP", "Material Type (TRL)": "Material Type_DSBP"})
     df_dsbp_bom["Material Type_DSBP"] = df_dsbp_bom["Material Type_DSBP"].replace(["PMP", "FOP", "RMP"], ["Packaging Material Part", "Formulation Part", "Raw Material Part"])
-    st.dataframe(df_dsbp_bom)
+    # st.dataframe(df_dsbp_bom)
 
     # READ DSM BOM #
     df_dsm_bom = pd.read_excel(filename_dsm, sheet_name="Bill of Materials")
@@ -42,7 +42,7 @@ def run_ERAT(filename_dsbp, filename_dsm):
     df_dsm_bom = df_dsm_bom.reset_index()
     df_dsm_bom = df_dsm_bom.rename(columns={"Name/Number": "FPP Name", "Title": "FPP Title_DSM", "Material Number": "Material Number",
                                              "Material Title": "Material Title_DSM", "Material Type": "Material Type_DSM"})
-    st.dataframe(df_dsm_bom)
+    # st.dataframe(df_dsm_bom)
 
     df_dsm_bom = df_dsm_bom.astype(str)
     df_dsbp_bom = df_dsbp_bom.astype(str)
@@ -50,8 +50,7 @@ def run_ERAT(filename_dsbp, filename_dsm):
     df_merged_bom = pd.merge(df_dsbp_bom, df_dsm_bom, on=['FPP Name', 'Material Number'], how='outer')
     column_order = ['FPP Name', 'FPP Title_DSBP', 'FPP Title_DSM', 'Material Number', 'Material Title_DSBP', 'Material Title_DSM', 'Material Type_DSBP', 'Material Type_DSM']
     df_merged_bom = df_merged_bom[column_order]
-
-    st.dataframe(df_merged_bom)
+    # st.dataframe(df_merged_bom)
 
 
 
