@@ -1,32 +1,49 @@
-## LIBRARY IMPORTS
 import pandas as pd
 import numpy as np
 import streamlit as st
 from streamlit_option_menu import option_menu
 
+# Define the correct password
+CORRECT_PASSWORD = "ESSMPD"
+
 def SPECPROOF():
     st.title("SpecProof")
     st.write("")
-    # UPLOAD BOTH EXCEL FILES #
-    st.subheader("Upload DSBP report", divider="blue")
-    filename_dsbp = st.file_uploader("DSBP")
-    st.write("")
-    st.subheader("Upload ENOVIA report", divider="blue")
-    filename_dsm = st.file_uploader("DSM")
-    st.write("")
 
-    if st.button("RUN", type="primary"):
-        if filename_dsbp is None or filename_dsm is None:
-            # Identify which inputs are missing
-            missing_inputs = []
-            if filename_dsbp is None:
-                missing_inputs.append(":red[DSBP report]")
-            if filename_dsm is None:
-                missing_inputs.append(":red[ENOVIA DSM report]")
-            # Display a warning message
-            st.warning(f"Please upload: {', '.join(missing_inputs)}.", icon="⚠️")
+    # Check if the password is already verified
+    if "password_verified" not in st.session_state:
+        st.session_state.password_verified = False
+
+    # If the password is not verified, show the password input
+    if not st.session_state.password_verified:
+        password = st.text_input(":lock: Insert password", type='password', help="Ask @Lopez, Alejandro for the password")
+        if password == CORRECT_PASSWORD:
+            st.session_state.password_verified = True
+            st.experimental_rerun()  # Rerun the app to show the rest of the content
         else:
-            run_SPECPROOF(filename_dsbp, filename_dsm)
+            if password:
+                st.error("Incorrect password")
+    else:
+        # UPLOAD BOTH EXCEL FILES #
+        st.subheader("Upload DSBP report", divider="blue")
+        filename_dsbp = st.file_uploader("DSBP")
+        st.write("")
+        st.subheader("Upload ENOVIA report", divider="blue")
+        filename_dsm = st.file_uploader("DSM")
+        st.write("")
+
+        if st.button("RUN", type="primary"):
+            if filename_dsbp is None or filename_dsm is None:
+                # Identify which inputs are missing
+                missing_inputs = []
+                if filename_dsbp is None:
+                    missing_inputs.append(":red[DSBP report]")
+                if filename_dsm is None:
+                    missing_inputs.append(":red[ENOVIA DSM report]")
+                # Display a warning message
+                st.warning(f"Please upload: {', '.join(missing_inputs)}.", icon="⚠️")
+            else:
+                run_SPECPROOF(filename_dsbp, filename_dsm)
 
 def run_SPECPROOF(filename_dsbp, filename_dsm):
     # READ DSBP BOM #
