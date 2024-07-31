@@ -107,7 +107,7 @@ def main():
         selected = option_menu(
             menu_title="Navigation",
             options=["SpecProof"],
-            icons=["1-circle-fill"],
+            icons=["robot"],
             menu_icon="list",
             default_index=0,
         )
