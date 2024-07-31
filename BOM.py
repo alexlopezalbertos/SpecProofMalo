@@ -53,6 +53,7 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_dsbp_bom = df_dsbp_bom.rename(columns={"PI FPC Code (IL/PM)": "FPP Name", "PI FPC Description (IL/PM)": "FPP Title_DSBP", "PI Material Number (IL/PM)": "Material Number",
                                                "Material Description (IL/PM)": "Material Title_DSBP", "Material Type (TRL)": "Material Type_DSBP"})
     df_dsbp_bom["Material Type_DSBP"] = df_dsbp_bom["Material Type_DSBP"].replace(["PMP", "FOP", "RMP"], ["Packaging Material Part", "Formulation Part", "Raw Material Part"])
+    df_dsbp_bom["Material Number"] = df_dsbp_bom["Material Number"].astype(int).astype(str)
     # st.dataframe(df_dsbp_bom)
 
     # READ DSM BOM #
