@@ -25,11 +25,11 @@ def SPECPROOF():
                 st.error("Incorrect password")
     else:
         # UPLOAD BOTH EXCEL FILES #
-        st.subheader("Upload DSBP report", divider="blue")
-        filename_dsbp = st.file_uploader("DSBP")
+        st.subheader(":page_facing_up: DSBP", divider="blue")
+        filename_dsbp = st.file_uploader("Upload DSBP report")
         st.write("")
-        st.subheader("Upload ENOVIA report", divider="blue")
-        filename_dsm = st.file_uploader("DSM")
+        st.subheader(":page_facing_up: ENOVIA", divider="blue")
+        filename_dsm = st.file_uploader("Upload DSM report")
         st.write("")
 
         if st.button("RUN", type="primary"):
@@ -75,6 +75,10 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_merged_bom = pd.merge(df_dsbp_bom, df_dsm_bom, on=['FPP Name', 'Material Number'], how='outer')
     column_order = ['FPP Name', 'FPP Title_DSBP', 'FPP Title_DSM', 'Material Number', 'Material Title_DSBP', 'Material Title_DSM', 'Material Type_DSBP', 'Material Type_DSM']
     df_merged_bom = df_merged_bom[column_order]
+    df_merged_bom["Material Title_DSBP"] = df_merged_bom["Material Title_DSBP"].str.strip() #remove last space after title
+    df_merged_bom["Material Title_DSM"] = df_merged_bom["Material Title_DSM"].str.strip() #remove last space after title
+    df_merged_bom["Material Title_DSBP"] = df_merged_bom["Material Title_DSBP"].str.replace('\u00A0', ' ') #Replaces weird spaces for normal spaces
+    df_merged_bom["Material Title_DSM"] = df_merged_bom["Material Title_DSM"].str.replace('\u00A0', ' ') #Replaces weird spaces for normal spaces
     df_merged_bom = df_merged_bom.sort_values(by='FPP Name', ascending=True)
     # st.dataframe(df_merged_bom)
 
