@@ -16,7 +16,7 @@ def SPECPROOF():
 
     # If the password is not verified, show the password input
     if not st.session_state.password_verified:
-        password = st.text_input(":lock: Insert password", type='password', help="Ask @Lopez, Alejandro for the password")
+        password = st.text_input(":lock: Insert password", type='password', help="Request password to @Lopez, Alejandro")
         if password == CORRECT_PASSWORD:
             st.session_state.password_verified = True
             st.rerun()  # Rerun the app to show the rest of the content
