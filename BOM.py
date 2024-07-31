@@ -67,6 +67,7 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_dsm_bom = df_dsm_bom.reset_index()
     df_dsm_bom = df_dsm_bom.rename(columns={"Name/Number": "FPP Name", "Title": "FPP Title_DSM", "Material Number": "Material Number",
                                              "Material Title": "Material Title_DSM", "Material Type": "Material Type_DSM"})
+    df_dsm_bom["Material Type_DSM"] = df_dsm_bom["Material Type_DSM"].replace(["Raw Material"], ["Raw Material Part"])
     # st.dataframe(df_dsm_bom)
 
     df_dsm_bom = df_dsm_bom.astype(str)
