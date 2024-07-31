@@ -19,7 +19,7 @@ def SPECPROOF():
         password = st.text_input(":lock: Insert password", type='password', help="Ask @Lopez, Alejandro for the password")
         if password == CORRECT_PASSWORD:
             st.session_state.password_verified = True
-            st.experimental_rerun()  # Rerun the app to show the rest of the content
+            st.rerun()  # Rerun the app to show the rest of the content
         else:
             if password:
                 st.error("Incorrect password")
