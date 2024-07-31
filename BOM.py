@@ -52,13 +52,16 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_dsbp_bom = df_dsbp_bom.drop(df_dsbp_bom.columns.difference(df_dsbp_bom_keep), axis=1)
     df_dsbp_bom = df_dsbp_bom.rename(columns={"PI FPC Code (IL/PM)": "FPP Name", "PI FPC Description (IL/PM)": "FPP Title_DSBP", "PI Material Number (IL/PM)": "Material Number",
                                                "Material Description (IL/PM)": "Material Title_DSBP", "Material Type (TRL)": "Material Type_DSBP"})
-    df_dsbp_bom["Material Type_DSBP"] = df_dsbp_bom["Material Type_DSBP"].replace(["PMP", "FOP", "RMP"], ["Packaging Material Part", "Formulation Part", "Raw Material Part"])
+    df_dsbp_bom = df_dsbp_bom[df_dsbp_bom["Material Type_DSBP"].isin(["PMP", "FOP", "RMP", "APP"])]
+    df_dsbp_bom["Material Type_DSBP"] = df_dsbp_bom["Material Type_DSBP"].replace(["PMP", "FOP", "RMP", "APP"], ["Packaging Material Part", "Formulation Part", "Raw Material Part", "Assembled Product Part"])
+    
+    df_dsbp_bom["Material Number"] = pd.to_numeric(df_dsbp_bom["Material Number"], errors='coerce').fillna(0).astype(int)
     # st.dataframe(df_dsbp_bom)
 
     # READ DSM BOM #
     df_dsm_bom = pd.read_excel(filename_dsm, sheet_name="Bill of Materials")
     df_dsm_bom = df_dsm_bom[df_dsm_bom["Type"] == "Finished Product Part"]
-    df_dsm_bom = df_dsm_bom[df_dsm_bom["Material Type"].isin(["Packaging Material Part", "Formulation Part", "Raw Material Part"])]
+    df_dsm_bom = df_dsm_bom[df_dsm_bom["Material Type"].isin(["Packaging Material Part", "Formulation Part", "Raw Material Part", "Assembled Product Part"])]
     df_dsm_bom_keep = ["Name/Number", "Title", "Material Number", "Material Title", "Material Type"]
     df_dsm_bom = df_dsm_bom.drop(df_dsm_bom.columns.difference(df_dsm_bom_keep), axis=1)
     df_dsm_bom = df_dsm_bom.reset_index()
@@ -72,6 +75,7 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_merged_bom = pd.merge(df_dsbp_bom, df_dsm_bom, on=['FPP Name', 'Material Number'], how='outer')
     column_order = ['FPP Name', 'FPP Title_DSBP', 'FPP Title_DSM', 'Material Number', 'Material Title_DSBP', 'Material Title_DSM', 'Material Type_DSBP', 'Material Type_DSM']
     df_merged_bom = df_merged_bom[column_order]
+    df_merged_bom = df_merged_bom.sort_values(by='FPP Name', ascending=True)
     # st.dataframe(df_merged_bom)
 
 
