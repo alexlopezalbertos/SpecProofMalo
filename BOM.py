@@ -48,7 +48,9 @@ def SPECPROOF():
 def run_SPECPROOF(filename_dsbp, filename_dsm):
    
     # ========================================================================== BOM ==================================================================================================
-   
+    
+    st.subheader(":one: BOM:", divider="blue")
+
     # READ DSBP BOM #
     df_dsbp_bom = pd.read_excel(filename_dsbp, sheet_name="Full BOM - Materials")
     df_dsbp_bom_keep = ["PI FPC Code (IL/PM)", "PI FPC Description (IL/PM)", "PI Material Number (IL/PM)", "Material Description (IL/PM)", "Material Type (TRL)"]
@@ -105,18 +107,18 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_compare_styled = df_merged_bom.style.apply(highlight_diff, axis=1)
     
     # Streamlit Print
-    st.subheader(":one: BOM Comparison:", divider="blue")
     st.dataframe(df_compare_styled)
 
     #================================================================================= PALLETS ===================================================================================================================================== #
 
+    st.subheader(":two: Pallet:", divider="blue")
+
     # READ DSBP PALLETS #
     df_dsbp_pallet = pd.read_excel(filename_dsbp, sheet_name="Strategies & Counts")
-    df_dsbp_pallet_keep = ["PI FPC Code (IL/PM, IOL)", "Intended Markets (IL/PM, IOL)", "Production Plant (Primary) Pallet (IL/PM, IOL)"]
+    df_dsbp_pallet_keep = ["PI FPC Code (IL/PM, IOL)", "PI FPC Description (IL/PM, IOL)", "Intended Markets (IL/PM, IOL)", "Production Plant (Primary) Pallet (IL/PM, IOL)"]
     df_dsbp_pallet = df_dsbp_pallet.drop(df_dsbp_pallet.columns.difference(df_dsbp_pallet_keep), axis=1)
-    df_dsbp_pallet = df_dsbp_pallet.rename(columns={"PI FPC Code (IL/PM, IOL)": "FPP Name", "Intended Markets (IL/PM, IOL)": "Markets", "Production Plant (Primary) Pallet (IL/PM, IOL)": "Pallet Type_DSBP"})
+    df_dsbp_pallet = df_dsbp_pallet.rename(columns={"PI FPC Code (IL/PM, IOL)": "FPP Name", "PI FPC Description (IL/PM, IOL)": "FPP Title", "Intended Markets (IL/PM, IOL)": "Markets", "Production Plant (Primary) Pallet (IL/PM, IOL)": "Pallet Type_DSBP"})
     df_dsbp_pallet = df_dsbp_pallet.astype(str)
-    # st.dataframe(df_dsbp_pallet)
 
     # READ DSM pallet #
     df_dsm_pallet = pd.read_excel(filename_dsm, sheet_name="Weights & Dimensions")
@@ -124,29 +126,56 @@ def run_SPECPROOF(filename_dsbp, filename_dsm):
     df_dsm_pallet = df_dsm_pallet[df_dsm_pallet['TransportUnit - Include In SAP BOM Feed'] == "Yes"]
     df_dsm_pallet_keep = ["Name/Number", "Title", "Transport Unit - Pallet Type", "Transport Unit - Name", "TransportUnit - Include In SAP BOM Feed", "Transport Unit - Stacking Pattern GCAS Code"]
     df_dsm_pallet = df_dsm_pallet.drop(df_dsm_pallet.columns.difference(df_dsm_pallet_keep), axis=1)
-    df_dsm_pallet = df_dsm_pallet.reset_index()
-    df_dsm_pallet.drop("index", axis=1, inplace=True)
     df_dsm_pallet = df_dsm_pallet.rename(columns={"Name/Number": "FPP Name", "Title":"FPP Title", "Transport Unit - Pallet Type": "Pallet Type_DSM", "Transport Unit - Name": "TUP DSM", "Transport Unit - Stacking Pattern GCAS Code": "SPS DSM"})
     df_dsm_pallet = df_dsm_pallet.astype(str)
-    # st.dataframe(df_dsm_pallet)
 
     # MERGE Pallet #
     df_merged_pallet = pd.merge(df_dsbp_pallet, df_dsm_pallet, on=['FPP Name'], how='outer')
-    column_order = ['FPP Name', 'FPP Title', 'Markets', 'Pallet Type_DSBP', 'Pallet Type_DSM', 'TUP DSM', 'SPS DSM']
+    column_order = ['FPP Name', 'Markets', 'Pallet Type_DSBP', 'Pallet Type_DSM', 'TUP DSM', 'SPS DSM']
     df_merged_pallet = df_merged_pallet[column_order]
     df_merged_pallet = df_merged_pallet.sort_values(by='FPP Name', ascending=True)
     df_merged_pallet = df_merged_pallet.reset_index()
     df_merged_pallet.drop("index", axis=1, inplace=True)
-    # st.dataframe(df_merged_pallet)
 
     # Apply the highlight_diff function to each row of the DataFrame
     df_compare_styled = df_merged_pallet.style.apply(highlight_diff, axis=1)
     
     # Streamlit Print
-    st.subheader(":two: Pallet Comparison:", divider="blue")
     st.dataframe(df_compare_styled)
     
+    #  ===================================================================================== PLANTS ==============================================================================
+    
+    st.subheader(":three: Plant:", divider="blue")
+    
+    # READ DSBP PLANTS #
+    df_dsbp_plant = pd.read_excel(filename_dsbp, sheet_name="Production Data")
+    df_dsbp_plant_keep = ["PI FPC Code (IL/PM)", "PI FPC Description (IL/PM)", "Producing Plant (Artwork planner, Business planner, C_ACE, GPS, IL/PM, IMDO, IOL, MIL, MSM, PIL, Package SPOC, Purchasing, R&D Formula, R&D Pack, SIEL, TRL, Tech Pack & MPD)"]
+    df_dsbp_plant = df_dsbp_plant.drop(df_dsbp_plant.columns.difference(df_dsbp_plant_keep), axis=1)
+    df_dsbp_plant = df_dsbp_plant.rename(columns={"PI FPC Code (IL/PM)": "FPP Name", "PI FPC Description (IL/PM)": "FPP Title", "Producing Plant (Artwork planner, Business planner, C_ACE, GPS, IL/PM, IMDO, IOL, MIL, MSM, PIL, Package SPOC, Purchasing, R&D Formula, R&D Pack, SIEL, TRL, Tech Pack & MPD)": "Plant_DSBP"})
+    df_dsbp_plant = df_dsbp_plant.astype(str)
 
+    # READ DSM PLANTS #
+    df_dsm_plant = pd.read_excel(filename_dsm, sheet_name="Plants")
+    df_dsm_plant = df_dsm_plant[df_dsm_plant["Type"] == "Finished Product Part"]
+    df_dsm_plant_keep = ["Name/Number", "Title", "Plants"]
+    df_dsm_plant = df_dsm_plant.drop(df_dsm_plant.columns.difference(df_dsm_plant_keep), axis=1)
+    df_dsm_plant = df_dsm_plant.rename(columns={"Name/Number": "FPP Name", "Title": "FPP Title", "Plants": "Plant_DSM"})
+    df_dsm_plant = df_dsm_plant.astype(str)
+
+    # MERGE PLANTS #
+    df_merged_plant = pd.merge(df_dsbp_plant, df_dsm_plant, on=['FPP Name'], how='outer')
+    column_order = ['FPP Name', 'Plant_DSBP', 'Plant_DSM']
+    df_merged_plant = df_merged_plant[column_order]
+    df_merged_plant = df_merged_plant.sort_values(by='FPP Name', ascending=True)
+    df_merged_plant = df_merged_plant.reset_index()
+    df_merged_plant.drop("index", axis=1, inplace=True)
+    df_merged_plant['Plant_DSM'] = df_merged_plant['Plant_DSM'].str[:-5] #eliminates last 5 letters of the strings in that column to get rid of plant code: blablabla~D5O9 --> blablabla
+    
+    # Apply the highlight_diff function to each row of the DataFrame
+    # df_compare_styled = df_merged_plant.style.apply(highlight_diff, axis=1)
+
+    # Streamlit Print
+    st.dataframe(df_merged_plant)
 
 # Main function
 def main():
